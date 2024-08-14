@@ -59,16 +59,31 @@ def display():
 
 def summary(month):
     total = 0
-    with open('expenses.csv','r') as f:
-        csv_reader = csv.reader(f,delimiter=',')
-        line = 0
-        for row in csv_reader:
-            if line == 0:
-                line+=1
-            else:
-                total+=int(row[3])
-                line+=1
-        print(f"Total expenses: ${total}")
+    if month==13:
+        with open('expenses.csv','r') as f:
+            csv_reader = csv.reader(f,delimiter=',')
+            line = 0
+            for row in csv_reader:
+                if line == 0:
+                    line+=1
+                else:
+                    total+=int(row[3])
+                    line+=1
+            print(f"Total expenses: ${total}")
+    else:
+        with open('expenses.csv','r') as f:
+            csv_reader = csv.reader(f,delimiter=',')
+            line = 0
+            for row in csv_reader:
+                if line == 0:
+                    line+=1
+                else:
+                    date_str = row[1]
+                    month_exp = date_str.split("-")[1]
+                    if(int(month)==int(month_exp)):
+                        total+=int(row[3])
+                    line+=1
+            print(f"Total expenses: ${total}")
 # Here are some additional features that you can add to the application:
 
 # Add expense categories and allow users to filter expenses by category.
@@ -114,7 +129,7 @@ def main():
             # else:
             #     display()
         case "summary":
-            month = sys.argv[3] if len(sys.argv) > 3 else 8
+            month = sys.argv[3] if len(sys.argv) > 3 else 13
             summary(month)
         case _:
             print("The given argument(s) isn't supported.")
