@@ -58,7 +58,17 @@ def display():
 # Users can view a summary of expenses for a specific month (of current year).
 
 def summary(month):
-    pass
+    total = 0
+    with open('expenses.csv','r') as f:
+        csv_reader = csv.reader(f,delimiter=',')
+        line = 0
+        for row in csv_reader:
+            if line == 0:
+                line+=1
+            else:
+                total+=int(row[3])
+                line+=1
+        print(f"Total expenses: ${total}")
 # Here are some additional features that you can add to the application:
 
 # Add expense categories and allow users to filter expenses by category.
@@ -92,7 +102,7 @@ def summary(month):
 import sys
 def main():
     print("Welcome to Expense Tracker!!!")
-    arg = sys.argv[1]  
+    arg = sys.argv[1]
     match arg:
         case "add":
             add_exp(sys.argv[3],sys.argv[5])
@@ -103,8 +113,9 @@ def main():
             #     display_status(sys.argv[2])
             # else:
             #     display()
-        # case "delete":
-        #     delete_task(sys.argv[2])
+        case "summary":
+            month = sys.argv[3] if len(sys.argv) > 3 else 8
+            summary(month)
         case _:
             print("The given argument(s) isn't supported.")
 main()
