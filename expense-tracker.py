@@ -31,12 +31,53 @@ def add_exp(description,amount):
                 writer.writerow({'ID': id, 'Date': datetime.date.today(), 'Description': description,'Amount':amount})
                 print(f"Expense added successfully (ID: {id})")
 # Users can update an expense.
-def update_exp(id):
-    pass
+def update_exp(id,description,amount):
+    rows = []
+    found = False
+    with open('expenses.csv', 'r') as f:
+        csv_reader = csv.reader(f, delimiter=',')
+        header = next(csv_reader)
+        rows.append(header)
+        for row in csv_reader:
+            if int(row[0]) == int(id):
+                found = True
+                updated_row = [id,row[1],description,amount]
+                # updated_row = 
+                rows.append(updated_row)
+            else:
+                rows.append(row)
+
+    if not found:
+        print("Expense doesn't exist!")
+    else:
+        with open('expenses.csv', 'w', newline='') as f:
+            csv_writer = csv.writer(f)
+            csv_writer.writerows(rows)
+            print("Expense updated successfully!")
+
 
 # Users can delete an expense.
 def delete_exp(id):
-    pass
+    rows = []
+    found = False
+    with open('expenses.csv', 'r') as f:
+        csv_reader = csv.reader(f, delimiter=',')
+        header = next(csv_reader)
+        rows.append(header)
+        for row in csv_reader:
+            if int(row[0]) == int(id):
+                found = True
+            else:
+                rows.append(row)
+
+    if not found:
+        print("Expense doesn't exist!")
+    else:
+        with open('expenses.csv', 'w', newline='') as f:
+            csv_writer = csv.writer(f)
+            csv_writer.writerows(rows)
+            print("Expense deleted successfully!")
+
 
 # Users can view all expenses.
 # $ expense-tracker list
@@ -99,8 +140,13 @@ def summary(month):
 # $ expense-tracker summary
 # # Total expenses: $30
 
+
+
 # $ expense-tracker delete --id 1
 # # Expense deleted successfully
+
+# $ expense-tracker update --id 1 --description "Lunch" --amount 50
+# # Expense updated successfully
 
 # $ expense-tracker summary
 # # Total expenses: $20
@@ -123,14 +169,13 @@ def main():
             add_exp(sys.argv[3],sys.argv[5])
         case "list":
             display()
-        # case "list":
-        #     # if(len(sys.argv)>2):
-            #     display_status(sys.argv[2])
-            # else:
-            #     display()
+        case "update":
+            update_exp(sys.argv[3],sys.argv[5],sys.argv[7])
         case "summary":
             month = sys.argv[3] if len(sys.argv) > 3 else 13
             summary(month)
+        case "delete":
+            delete_exp(sys.argv[3])
         case _:
             print("The given argument(s) isn't supported.")
 main()
